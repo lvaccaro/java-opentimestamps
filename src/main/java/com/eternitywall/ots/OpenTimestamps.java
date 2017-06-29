@@ -306,6 +306,14 @@ public class OpenTimestamps {
     public static Long verify(Timestamp timestamp) {
         Boolean found = false;
 
+        // upgrade timestamp before verify
+        if(!timestamp.isTimestampComplete()) {
+            boolean changed = upgrade(timestamp);
+            if (timestamp == null) {
+                return null;
+            }
+        }
+
         for (Map.Entry<byte[], TimeAttestation> item : timestamp.allAttestations().entrySet()) {
             byte[] msg = item.getKey();
             TimeAttestation attestation = item.getValue();
