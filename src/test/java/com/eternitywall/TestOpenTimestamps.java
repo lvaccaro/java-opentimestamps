@@ -158,7 +158,7 @@ public class TestOpenTimestamps{
             DetachedTimestampFile detachedOts = DetachedTimestampFile.deserialize(incompleteOts);
             DetachedTimestampFile detached = DetachedTimestampFile.from(Hash.from(incomplete, OpSHA256._TAG));
             Long timestamp = OpenTimestamps.verify(detachedOts, detached);
-            assertEquals(null, timestamp);
+            assertEquals(1473227803L, timestamp);
         }
 
     }
