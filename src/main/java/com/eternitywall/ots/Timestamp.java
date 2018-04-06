@@ -24,6 +24,8 @@ import org.bitcoinj.core.*;
 import com.eternitywall.ots.attestation.BitcoinBlockHeaderAttestation;
 import com.eternitywall.ots.attestation.PendingAttestation;
 import com.eternitywall.ots.attestation.TimeAttestation;
+import com.eternitywall.ots.attestation.UnknownAttestation;
+import com.eternitywall.ots.attestation.EthereumBlockHeaderAttestation;
 import com.eternitywall.ots.op.Op;
 import com.eternitywall.ots.op.OpBinary;
 import com.eternitywall.ots.op.OpSHA256;
@@ -448,6 +450,12 @@ public class Timestamp {
             //byte[] msg = item.getKey();
             TimeAttestation attestation = item.getValue();
             if (attestation instanceof BitcoinBlockHeaderAttestation) {
+                return true;
+            } else if (attestation instanceof LitecoinBlockHeaderAttestation) {
+                return true;
+            } else if (attestation instanceof EthereumBlockHeaderAttestation) {
+                return true;
+            } else if (attestation instanceof UnknownAttestation) {
                 return true;
             }
         }
