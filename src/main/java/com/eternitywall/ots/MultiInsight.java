@@ -33,7 +33,6 @@ public class MultiInsight {
             insightUrls.add("https://search.bitaccess.co/insight-api");
             insightUrls.add("https://www.localbitcoinschain.com/api");
             insightUrls.add("https://insight.bitpay.com/api");
-            insightUrls.add("https://finney.calendar.eternitywall.com/insight-api");
             insightUrls.add("https://btc-bitcore1.trezor.io/api");
             insightUrls.add("https://btc-bitcore4.trezor.io/api");
             insightUrls.add("https://blockexplorer.com/api");
@@ -78,7 +77,7 @@ public class MultiInsight {
                 blockHeader.setMerkleroot(merkleroot);
                 blockHeader.setTime(time);
                 blockHeader.setBlockHash(hash);
-                log.info(take.getFromUrl() + " " + blockHeader);
+                //log.info(take.getFromUrl() + " " + blockHeader);
 
                 if (results.contains(blockHeader)) {
                     return blockHeader;
@@ -110,7 +109,7 @@ public class MultiInsight {
             if(take.isOk()) {
                 JSONObject jsonObject = take.getJson();
                 String blockHash = jsonObject.getString("blockHash");
-                log.info(take.getFromUrl() + " " + blockHash);
+                //log.info(take.getFromUrl() + " " + blockHash);
 
                 if (results.contains(blockHash)) {
                     return blockHash;
