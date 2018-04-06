@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 public class OpenTimestamps {
 
 
-    private static Logger log = Logger.getLogger(OpenTimestamps.class.getName());
+    private static Logger log = Utils.getLogger(OpenTimestamps.class.getName());
 
 
     /**
@@ -333,7 +333,8 @@ public class OpenTimestamps {
             } catch (VerificationException e) {
                 throw e;
             } catch (Exception e) {
-                log.info(Utils.toUpperFirstLetter(chain) + " verification failed: " + e.getMessage());
+                log.severe(Utils.toUpperFirstLetter(chain) + " verification failed: " + e.getMessage());
+                throw e;
             }
         }
         return hashResults;
