@@ -41,7 +41,7 @@ public class Timestamp {
     private static Logger log = Utils.getLogger(Timestamp.class.getName());
 
     public byte[] msg;
-    public List<TimeAttestation> attestations;
+    public SortedSet<TimeAttestation> attestations;
     public HashMap<Op, Timestamp> ops;
 
     /**
@@ -50,7 +50,7 @@ public class Timestamp {
      */
     public Timestamp(byte[] msg) {
         this.msg = msg;
-        this.attestations = new ArrayList<>();
+        this.attestations = new TreeSet<>();
         this.ops = new HashMap<>();
     }
 
@@ -120,26 +120,26 @@ public class Timestamp {
      * @param ctx - The stream serialization context.
      */
     public void serialize(StreamSerializationContext ctx) {
-
-        // sort
-        List<TimeAttestation> sortedAttestations = this.attestations;
-        Collections.sort(sortedAttestations);
         
-        if (sortedAttestations.size() > 1) {
-            for (int i = 0; i < sortedAttestations.size() - 1; i++) {
-                ctx.writeBytes(new byte[]{(byte) 0xff, (byte) 0x00});
-                sortedAttestations.get(i).serialize(ctx);
+        if (this.attestations.size() > 1) {
+            Iterator it = this.attestations.iterator();
+            while (it.hasNext()) {
+                TimeAttestation attestation = (TimeAttestation) it.next();
+                if (!attestation.equals(this.attestations.last())){
+                    ctx.writeBytes(new byte[]{(byte) 0xff, (byte) 0x00});
+                    attestation.serialize(ctx);
+                }
             }
         }
         if (this.ops.isEmpty()) {
             ctx.writeByte((byte) 0x00);
-            if (!sortedAttestations.isEmpty()) {
-                sortedAttestations.get(sortedAttestations.size() - 1).serialize(ctx);
+            if (!this.attestations.isEmpty()) {
+                this.attestations.last().serialize(ctx);
             }
         } else if (!this.ops.isEmpty()) {
-            if (!sortedAttestations.isEmpty()) {
+            if (!this.attestations.isEmpty()) {
                 ctx.writeBytes(new byte[]{(byte) 0xff, (byte) 0x00});
-                sortedAttestations.get(sortedAttestations.size() - 1).serialize(ctx);
+                this.attestations.last().serialize(ctx);
             }
 
             int counter = 0;
@@ -513,9 +513,11 @@ public class Timestamp {
         if(this.attestations.size() != timestamp.attestations.size()){
             return false;
         }
-        for (int i=0 ; i < this.attestations.size(); i++){
-            TimeAttestation ta1 = this.attestations.get(i);
-            TimeAttestation ta2 = timestamp.attestations.get(i);
+        Iterator it1 = this.attestations.iterator();
+        Iterator it2 = timestamp.attestations.iterator();
+        while (it1.hasNext() && it2.hasNext()) {
+            TimeAttestation ta1 = (TimeAttestation) it1.next();
+            TimeAttestation ta2 = (TimeAttestation) it2.next();
             if(!(ta1.equals( ta2 ))){
                 return false;
             }
